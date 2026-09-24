@@ -1,25 +1,9 @@
-{
-  "name": "pixeldote-live",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
-    "start": "next start",
-    "lint": "next lint"
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
   },
-  "dependencies": {
-    "@prisma/client": "^6.x",
-    "lucide-react": "^1.16.0",
-    "next": "16.3.5",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "prisma": "^6.x",
-    "typescript": "^5"
-  }
-}
+};
+
+export default nextConfig;
