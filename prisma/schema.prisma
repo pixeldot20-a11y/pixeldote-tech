@@ -1,3 +1,22 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  imageUrl    String
+  price       Float
+  stock       Int
+  createdAt   DateTime @default(now())
+}
+
 model Appointment {
   id          String   @id @default(cuid())
   clientName  String
@@ -6,6 +25,6 @@ model Appointment {
   serviceName String
   date        String
   timeSlot    String
-  status      String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  status      String   @default("PENDING")
   createdAt   DateTime @default(now())
 }
