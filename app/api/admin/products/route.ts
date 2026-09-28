@@ -5,6 +5,14 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     
+    // Validate required fields
+    if (!body.name || !body.price) {
+      return NextResponse.json(
+        { success: false, error: 'Name and price are required fields.' },
+        { status: 400 }
+      )
+    }
+
     const product = await prisma.product.create({
       data: {
         name: body.name,
@@ -16,10 +24,10 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ success: true, product })
-  } catch (error) {
-    console.error('Admin Product Save Error:', error)
+  } catch (error: any) {
+    console.error('CRITICAL PRODUCT SAVE ERROR:', error)
     return NextResponse.json(
-      { success: false, error: 'Failed to save product in admin route' }, 
+      { success: false, error: error.message || 'Internal Server Error' }, 
       { status: 500 }
     )
   }
