@@ -1,16 +1,26 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
-
-export async function GET() {
+export async function POST(request: Request) {
   try {
-    const products = await prisma.product.findMany({
-      orderBy: { createdAt: 'desc' }
+    const body = await request.json()
+    
+    const product = await prisma.product.create({
+      data: {
+        name: body.name,
+        description: body.description || '',
+        imageUrl: body.imageUrl || '',
+        price: parseFloat(body.price),
+        stock: parseInt(body.stock, 10) || 0,
+      },
     })
-    return NextResponse.json({ success: true, products })
-  } catch (error: any) {
-    console.error('Failed to fetch public products:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch products' }, { status: 500 })
+
+    return NextResponse.json({ success: true, product })
+  } catch (error) {
+    console.error('Admin Product Save Error:', error)
+    return NextResponse.json(
+      { success: false, error: 'Failed to save product in admin route' }, 
+      { status: 500 }
+    )
   }
 }
