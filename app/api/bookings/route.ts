@@ -1,30 +1,22 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { clientName, phone, email, serviceName, date, timeSlot } = body;
-
-    if (!clientName || !phone || !serviceName || !date || !timeSlot) {
-      return NextResponse.json({ error: 'Missing required booking details' }, { status: 400 });
-    }
-
-    const newAppointment = await prisma.appointment.create({
+    const body = await request.json()
+    const appointment = await prisma.appointment.create({
       data: {
-        clientName,
-        phone,
-        email,
-        serviceName,
-        date,
-        timeSlot,
+        clientName: body.clientName,
+        phone: body.phone,
+        email: body.email || null,
+        serviceName: body.serviceName,
+        date: body.date,
+        timeSlot: body.timeSlot,
       },
-    });
-
-    return NextResponse.json({ success: true, appointment: newAppointment });
+    })
+    return NextResponse.json({ success: true, appointment })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create appointment' }, { status: 500 });
+    console.error('Booking Save Error:', error)
+    return NextResponse.json({ success: false, error: 'Failed to save appointment' }, { status: 500 })
   }
 }
